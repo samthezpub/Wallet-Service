@@ -1,19 +1,19 @@
 package org.example.Dispatchers;
 
-import org.example.Exceptions.LoginException;
+import org.example.out.Dispatchers.Dispatch;
+import org.example.out.Dispatchers.Player;
+import org.example.out.Exceptions.LoginException;
+import org.example.out.Exceptions.NotFindException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
-import org.mockito.BDDMockito;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
-import static org.junit.jupiter.api.Assertions.fail;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class PlayerTest {
     private Player player;
@@ -69,12 +69,46 @@ public class PlayerTest {
     }
 
     @Test // TODO
+    @DisplayName("login_void")
     public void logIn_mustReturnVoid__Callable() {
-//        PowerMockito.mock(Dispatch.class);
+//        List<Player> playerList = new ArrayList<>();
+//        Player testPlayer = new Player();
 //
-//        BDDMockito.given(Dispatch.authenticationPlayer("123123", "123123")).willReturn(true);
-//        ;
-//        player.logIn("123123","123123");
-//        Assertions.assertEquals(true, player.isLogined());
+//        testPlayer.setLogin("123123");
+//        testPlayer.setPassword("123123");
+//
+//        playerList.add(testPlayer);
+//        Dispatch.setPlayers(playerList);
+//
+//        try {
+//            player.logIn("123123", "123123");
+//        } catch (NotFindException e) {
+//            throw new RuntimeException(e);
+//        }
+//
+//        assertTrue(player.isLogined());
+    }
+
+    @Test
+    @DisplayName("login_exception")
+    public void logIn_mustThrowException__Callable() {
+//        List<Player> playerList = new ArrayList<>();
+//        Player testPlayer = new Player();
+//
+//        testPlayer.setLogin("123123");
+//        testPlayer.setPassword("123123");
+//
+//        playerList.add(testPlayer);
+//        Dispatch.setPlayers(playerList);
+//
+//
+//        try {
+//            player.logIn("1231234", "1231234");
+//        } catch (NotFindException e) {
+//            assertFalse(player.isLogined());
+//        }
+//
+//
+
     }
 }

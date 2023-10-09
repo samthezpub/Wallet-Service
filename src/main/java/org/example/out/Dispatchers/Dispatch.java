@@ -13,8 +13,8 @@ import java.util.*;
 public class Dispatch {
     private static Set<Player> players = new HashSet<>();
 
-    public static List<Transaction> getTransactionsByPlayerId(Integer id) {
-        return Audit.getTransactions(id);
+    public static Set<Transaction> getTransactionsByPlayerId(Integer id) {
+        return Audit.findTransactionsByPlayerId(id);
     }
 
     private static void addTransaction(Player player, Transaction transaction) {
@@ -29,7 +29,7 @@ public class Dispatch {
 
     public static boolean authenticationPlayer(String login, String password) throws NotFindException {
         for (Player player : players) {
-            if (player.getLogin() == login && player.getPassword() == password) {
+            if (player.getLogin().equals(login) && player.getPassword().equals(password)) {
                 return true;
             }
         }
@@ -41,6 +41,10 @@ public class Dispatch {
         BalanceResult playerBalance = player.getAccounts();
 
         BalanceResult result = new BalanceResult(playerBalance.getBalance()+value, playerBalance.getCreditBalance());
+
+        Transaction transaction = new Transaction(player.getId(), TransactionTypeEnum.WITHDRAW, player.getAccounts(), result);
+        Audit.addTransaction(transaction);
+
         return result;
     }
 

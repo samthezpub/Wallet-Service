@@ -7,7 +7,7 @@ import org.example.out.Exceptions.TransactionException;
 import org.example.out.Interfaces.IPlayer;
 import org.example.out.Utils.BalanceResult;
 
-import java.util.List;
+import java.util.Set;
 
 @Data
 public class Player implements IPlayer {
@@ -134,7 +134,7 @@ public class Player implements IPlayer {
     }
 
     @Override
-    public List<Transaction> getTransactions() {
+    public Set<Transaction> getTransactions() {
         try {
             checkIsLogin();
         } catch (LoginException e) {

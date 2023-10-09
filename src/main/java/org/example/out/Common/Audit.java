@@ -31,7 +31,7 @@ public class Audit {
         return playerTransactions;
     }
 
-    public static List<Transaction> getTransactions(Integer id) {
+    public static List<Transaction> getTransactions() {
         return transactions;
     }
     public static void setTransactions(List<Transaction> transactions) {

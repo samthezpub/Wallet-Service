@@ -3,11 +3,11 @@ package org.example.out.Interfaces;
 import org.example.out.Dispatchers.Transaction;
 import org.example.out.Utils.BalanceResult;
 
-import java.util.List;
+import java.util.Set;
 
 public interface IPlayer {
     BalanceResult getBalance();
-    List<Transaction> getTransactions();
+    Set<Transaction> getTransactions();
     void deposit(double value);
     void withdraw(double value);
     void takeCredit(double value);

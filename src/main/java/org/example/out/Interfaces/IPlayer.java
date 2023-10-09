@@ -2,6 +2,7 @@ package org.example.out.Interfaces;
 
 import org.example.out.Dispatchers.Transaction;
 import org.example.out.Exceptions.LoginException;
+import org.example.out.Exceptions.NotFindException;
 import org.example.out.Exceptions.TransactionException;
 import org.example.out.Utils.BalanceResult;
 
@@ -15,7 +16,7 @@ public interface IPlayer {
     void takeCredit(double value);
 
     void register(String login, String password) throws LoginException;
-    void logIn(String login, String password);
+    void logIn(String login, String password) throws NotFindException;
     void logOut();
 
 

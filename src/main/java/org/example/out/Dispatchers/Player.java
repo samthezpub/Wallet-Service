@@ -113,14 +113,8 @@ public class Player implements IPlayer {
 
 
     @Override
-    public void logIn(String login, String password) {
-        try {
+    public void logIn(String login, String password) throws NotFindException {
             isLogined = Dispatch.authenticationPlayer(login, password);
-        } catch (NotFindException e) {
-            isLogined = false;
-            System.err.println(e.getMessage());
-        }
-
     }
 
     @Override

@@ -15,6 +15,7 @@ public class Menu {
     private static Player player = new Player();
     private static Scanner scanner = new Scanner(System.in);
 
+
     public static void register() {
 
         String login = "";
@@ -53,14 +54,17 @@ public class Menu {
 
         try {
             player.register(login, password);
-        } catch (LoginException e) {
+            player.logIn(login, password);
+        } catch (LoginException | NotFindException e) {
             System.err.println(e.getMessage());
-            register();
+            menuNotLoggined();
             return;
         }
 
         System.out.println("Отлично! Мы вас зарегистрировали!");
         System.out.println("Ваш логин: " + login);
+
+        menuLoggined();
     }
 
     public static void login() {
@@ -87,8 +91,17 @@ public class Menu {
             return;
         }
 
-        player.logIn(login, password);
+        try {
+            player.logIn(login, password);
+
+            menuLoggined();
+        } catch (NotFindException e) {
+            System.err.println(e.getMessage());
+            menuNotLoggined();
+        }
         System.out.println("Вы успешно авторизированы, можете выполнять операции");
+
+
     }
 
     public static void deposit() {
@@ -100,16 +113,17 @@ public class Menu {
             value = Double.parseDouble(scanner.next());
             try {
                 player.deposit(value);
+                getBalance();
+                return;
             } catch (TransactionException e) {
                 System.err.println(e.getMessage());
             }
-
-            getBalance();
         } catch (NumberFormatException e) {
             System.err.println("Вы ввели недопустимое значение!");
-        }finally {
-            menu();
+        } finally {
+            menuLoggined();
         }
+
     }
 
     public static void withdrawPlayerBalance() {
@@ -125,7 +139,7 @@ public class Menu {
         } catch (NumberFormatException e) {
             System.err.println("Вы ввели недопустимое значение!");
         } finally {
-            menu();
+            menuLoggined();
         }
 
 
@@ -140,13 +154,18 @@ public class Menu {
             value = Double.parseDouble(scanner.next());
             player.takeCredit(value);
             getBalance();
+            menuLoggined();
         } catch (NumberFormatException e) {
             System.err.println("Вы ввели недопустимое значение!");
-        } finally {
-            menu();
+            menuLoggined();
         }
+    }
 
-
+    private static void logout() {
+        player.logOut();
+        System.out.println("Вы вышли из аккаунта!");
+        System.out.println("Всего хорошего!");
+        menuNotLoggined();
     }
 
     public static void getTransactions() {
@@ -162,22 +181,84 @@ public class Menu {
 
     }
 
-    public static void getBalance(){
+    public static void getBalance() {
         System.out.println("Ваш баланс");
         System.out.println("Общий: " + player.getAccounts().getBalance());
         System.out.println("Кредитный: " + player.getAccounts().getCreditBalance());
         System.out.println("Ваши деньги: " + (player.getAccounts().getBalance() - player.getAccounts().getCreditBalance()));
 
-        return;
+        menuLoggined();
     }
-    public static void menu() {
 
+
+    public static void menuNotLoggined() {
+        String playerChoose = "";
         boolean isRunning = true;
+        while (playerChoose.isEmpty()) {
+            System.out.println("Добро пожаловать в меню!");
+            System.out.println("Выберите один из элементов меню");
+            System.out.println("1 | Регистрация");
+            System.out.println("2 | Аунтефикация");
 
-        System.out.println("\n");
-        System.out.println("Добро пожаловать в меню!");
-//        while (isRunning) {
-//            System.out.println("");
-//        }
+            playerChoose = scanner.nextLine();
+        }
+
+        switch (playerChoose) {
+            case "1":
+                register();
+                break;
+            case "2":
+                login();
+                break;
+            default:
+                break;
+        }
     }
+
+
+    public static void menuLoggined() {
+        final int MENU_ELEMENTS = 6;
+
+
+        System.out.println("Выберите элемент меню");
+        System.out.println("1 | Выйти");
+        System.out.println("2 | Депозит");
+        System.out.println("3 | Снять деньги");
+        System.out.println("4 | Взять в кредит");
+        System.out.println("5 | Посмотреть баланс");
+        System.out.println("6 | Просмотреть транзакции");
+
+
+
+        String userChoose = scanner.nextLine();
+
+        while (userChoose.isEmpty() || Integer.parseInt(userChoose) < 1 || Integer.parseInt(userChoose) > MENU_ELEMENTS){
+            userChoose = scanner.nextLine();
+        }
+
+        switch (userChoose){
+            case "1":
+                logout();
+                break;
+            case "2":
+                deposit();
+                break;
+            case "3":
+                withdrawPlayerBalance();
+                break;
+            case "4":
+                takeCredit();
+                break;
+            case "5":
+                getBalance();
+                break;
+            case "6":
+                getTransactions();
+                break;
+            default:
+                break;
+        }
+    }
+
+
 }

@@ -10,11 +10,7 @@ public class App
 {
     public static void main( String[] args )
     {
-        Menu.register();
-        Menu.login();
-        Menu.deposit();
-        Menu.takeCredit();
-        Menu.withdrawPlayerBalance();
+        Menu.menuNotLoggined();
 
     }
 }

@@ -4,6 +4,7 @@ import org.example.in.Exceptions.InputException;
 import org.example.out.Dispatchers.Dispatch;
 import org.example.out.Dispatchers.Player;
 import org.example.out.Dispatchers.Transaction;
+import org.example.out.Exceptions.LoginException;
 import org.example.out.Exceptions.NotFindException;
 import org.example.out.Exceptions.TransactionException;
 
@@ -50,7 +51,14 @@ public class Menu {
         }
 
 
-        Dispatch.registerPlayer(player, login, password);
+        try {
+            player.register(login, password);
+        } catch (LoginException e) {
+            System.err.println(e.getMessage());
+            register();
+            return;
+        }
+
         System.out.println("Отлично! Мы вас зарегистрировали!");
         System.out.println("Ваш логин: " + login);
     }
@@ -90,7 +98,13 @@ public class Menu {
 
         try {
             value = Double.parseDouble(scanner.next());
-            player.deposit(value);
+            try {
+                player.deposit(value);
+            } catch (TransactionException e) {
+                System.err.println(e.getMessage());
+            }
+
+            getBalance();
         } catch (NumberFormatException e) {
             System.err.println("Вы ввели недопустимое значение!");
         }finally {
@@ -107,6 +121,7 @@ public class Menu {
             value = Double.parseDouble(scanner.next());
             player.withdraw(value);
 
+            getBalance();
         } catch (NumberFormatException e) {
             System.err.println("Вы ввели недопустимое значение!");
         } finally {
@@ -124,6 +139,7 @@ public class Menu {
         try {
             value = Double.parseDouble(scanner.next());
             player.takeCredit(value);
+            getBalance();
         } catch (NumberFormatException e) {
             System.err.println("Вы ввели недопустимое значение!");
         } finally {
@@ -147,13 +163,12 @@ public class Menu {
     }
 
     public static void getBalance(){
-        System.out.println("Вы решили просмотреть свой баланс...");
         System.out.println("Ваш баланс");
         System.out.println("Общий: " + player.getAccounts().getBalance());
         System.out.println("Кредитный: " + player.getAccounts().getCreditBalance());
         System.out.println("Ваши деньги: " + (player.getAccounts().getBalance() - player.getAccounts().getCreditBalance()));
 
-        menu();
+        return;
     }
     public static void menu() {
 

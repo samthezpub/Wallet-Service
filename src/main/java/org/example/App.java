@@ -13,7 +13,8 @@ public class App
         Menu.register();
         Menu.login();
         Menu.deposit();
-        Menu.getBalance();
+        Menu.takeCredit();
+        Menu.withdrawPlayerBalance();
 
     }
 }

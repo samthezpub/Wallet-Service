@@ -3,6 +3,7 @@ package org.example.out.Dispatchers;
 import lombok.Data;
 import org.example.out.Common.Audit;
 import org.example.out.Enums.TransactionTypeEnum;
+import org.example.out.Exceptions.LoginException;
 import org.example.out.Exceptions.NotFindException;
 import org.example.out.Exceptions.TransactionException;
 import org.example.out.Utils.BalanceResult;
@@ -21,7 +22,12 @@ public class Dispatch {
         Audit.addTransaction(transaction);
     }
 
-    public static void registerPlayer(Player player, String login, String password) {
+    public static void registerPlayer(Player player, String login, String password) throws LoginException {
+        for (Player playerIterable: players) {
+            if (playerIterable.getLogin().equals(login)){
+                throw new LoginException("Уже есть пользователь с таким логином!");
+            }
+        }
         player.setLogin(login);
         player.setPassword(password);
         players.add(player);
@@ -37,7 +43,11 @@ public class Dispatch {
         throw new NotFindException("Пользователь не найден!");
     }
 
-    public static BalanceResult deposit(Player player, double value) {
+    public static BalanceResult deposit(Player player, double value) throws TransactionException {
+        if (value <= 0){
+            throw new TransactionException("Нельзя использовать отрицательные значения и 0");
+        }
+
         BalanceResult playerBalance = player.getAccounts();
 
         BalanceResult result = new BalanceResult(playerBalance.getBalance()+value, playerBalance.getCreditBalance());
@@ -49,6 +59,9 @@ public class Dispatch {
     }
 
     public static BalanceResult withdrawPlayerBalance(Player player, double value) throws TransactionException {
+        if (value <= 0){
+            throw new TransactionException("Нельзя использовать отрицательные значения и 0");
+        }
         if (player.getAccounts().getBalance() - value < 0) {
             throw new TransactionException("На балансе недостаточно средств!");
         }
@@ -61,6 +74,9 @@ public class Dispatch {
     }
 
     public static BalanceResult takeCredit(Player player, double value) throws TransactionException {
+        if (value <= 0){
+            throw new TransactionException("Нельзя использовать отрицательные значения и 0");
+        }
         BalanceResult result = new BalanceResult(player.getAccounts().getBalance()+ value, value);
 
         Transaction transaction = new Transaction(player.getId(), TransactionTypeEnum.CREDIT, player.getAccounts(), result);

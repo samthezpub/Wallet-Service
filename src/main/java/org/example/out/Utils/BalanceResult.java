@@ -9,6 +9,13 @@ public class BalanceResult {
         this.creditBalance = creditBalance;
     }
 
+    @Override
+    public String toString() {
+        return "Баланс:\n" +
+                "Баланс:" + balance +
+                ", \nКредит=" + creditBalance;
+    }
+
     public double getBalance() {
         return balance;
     }

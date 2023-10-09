@@ -45,10 +45,11 @@ public class Player implements IPlayer {
      * Метод, добавляющий деньги
      *
      * @param value количество денег, которое мы хотим добавить
-     * @throws LoginException если isLoggined false шлёт исключение
+     * @throws RuntimeException если isLoggined false шлёт исключение
+     * @throws TransactionException если value <= 0
      */
     @Override
-    public void deposit(double value) {
+    public void deposit(double value) throws TransactionException {
         try {
             checkIsLogin();
         } catch (LoginException e) {
@@ -106,7 +107,7 @@ public class Player implements IPlayer {
     }
 
     @Override
-    public void register(String login, String password) {
+    public void register(String login, String password) throws LoginException {
         Dispatch.registerPlayer(this, login, password);
     }
 

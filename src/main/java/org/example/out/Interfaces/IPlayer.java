@@ -1,5 +1,6 @@
 package org.example.out.Interfaces;
 
+import org.example.out.Dispatchers.Player;
 import org.example.out.Dispatchers.Transaction;
 import org.example.out.Exceptions.LoginException;
 import org.example.out.Exceptions.NotFindException;
@@ -17,7 +18,7 @@ public interface IPlayer {
 
     void register(String login, String password) throws LoginException;
     void logIn(String login, String password) throws NotFindException;
-    void logOut();
+    void logOut(Player player);
 
 
 }

@@ -54,8 +54,7 @@ public class Menu {
 
         try {
             player.register(login, password);
-            player.logIn(login, password);
-        } catch (LoginException | NotFindException e) {
+        } catch (LoginException e) {
             System.err.println(e.getMessage());
             menuNotLoggined();
             return;
@@ -64,7 +63,7 @@ public class Menu {
         System.out.println("Отлично! Мы вас зарегистрировали!");
         System.out.println("Ваш логин: " + login);
 
-        menuLoggined();
+        menuNotLoggined();
     }
 
     public static void login() {
@@ -162,7 +161,7 @@ public class Menu {
     }
 
     private static void logout() {
-        player.logOut();
+        player.logOut(player);
         System.out.println("Вы вышли из аккаунта!");
         System.out.println("Всего хорошего!");
         menuNotLoggined();
@@ -179,6 +178,7 @@ public class Menu {
             }
         }
 
+        menuLoggined();
     }
 
     public static void getBalance() {

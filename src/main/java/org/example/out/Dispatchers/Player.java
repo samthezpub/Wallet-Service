@@ -11,7 +11,6 @@ import java.util.Set;
 
 @Data
 public class Player implements IPlayer {
-    private static Integer nextId = 0;
 
     private Integer id;
     private BalanceResult accounts;
@@ -21,14 +20,17 @@ public class Player implements IPlayer {
     private boolean isLogined;
 
     public Player() {
-        id = nextId++;
 
         this.accounts = new BalanceResult(0,0);
-        this.isLogined = false;
     }
 
-
-
+    public Player(Integer id, BalanceResult accounts, String login, String password) {
+        this.id = id;
+        this.accounts = accounts;
+        this.login = login;
+        this.password = password;
+        this.isLogined = false;
+    }
 
     /**
      * Метод, проверяющий авторизован ли пользователь
@@ -55,7 +57,7 @@ public class Player implements IPlayer {
         } catch (LoginException e) {
             throw new RuntimeException(e);
         }
-        accounts = Dispatch.deposit(this, value);
+        this.accounts = Dispatch.deposit(this.id, value);
     }
 
     /**
@@ -74,7 +76,7 @@ public class Player implements IPlayer {
         }
 
         try {
-            accounts = Dispatch.withdrawPlayerBalance(this, value);
+            accounts = Dispatch.withdrawPlayerBalance(this.id, value);
         } catch (TransactionException e) {
             System.err.println(e.getMessage());
         }
@@ -97,7 +99,7 @@ public class Player implements IPlayer {
         }
 
         try {
-            accounts = Dispatch.takeCredit(this, value);
+            accounts = Dispatch.takeCredit(this.id, value);
 
         } catch (TransactionException e) {
             System.err.println(e.getMessage());
@@ -108,24 +110,30 @@ public class Player implements IPlayer {
 
     @Override
     public void register(String login, String password) throws LoginException {
-        Dispatch.registerPlayer(this, login, password);
+        Dispatch.registerPlayer(login, password);
     }
 
 
     @Override
     public void logIn(String login, String password) throws NotFindException {
-            isLogined = Dispatch.authenticationPlayer(login, password);
+
+       Player result = Dispatch.authenticationPlayer(login, password);
+       this.id = result.getId();
+       this.accounts = result.getAccounts();
+       this.login = result.getLogin();
+       this.password = result.getPassword();
+       this.isLogined = result.isLogined();
     }
 
     @Override
-    public void logOut() {
-        isLogined = false;
+    public void logOut(Player player) {
+        Dispatch.logoutPlayer(this.id);
     }
 
     @Override
     public BalanceResult getBalance() {
 
-        return Dispatch.getBalance(this);
+        return Dispatch.getBalance(this.id);
     }
 
     @Override

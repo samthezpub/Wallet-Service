@@ -7,7 +7,6 @@ import org.example.out.Utils.BalanceResult;
 
 import java.util.Date;
 
-@AllArgsConstructor
 @Data
 public class Transaction {
     private static Integer nextId = 0;
@@ -38,4 +37,29 @@ public class Transaction {
                 ", Кредит после операции: " + balanceAfterOperation.getCreditBalance() +
                 ",\n Точная дата: " + date;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Transaction that = (Transaction) o;
+
+        if (id != that.id) return false;
+        if (type != that.type) return false;
+        if (!accounts.equals(that.accounts)) return false;
+        if (!balanceAfterOperation.equals(that.balanceAfterOperation)) return false;
+        return date.equals(that.date);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id;
+        result = 31 * result + type.hashCode();
+        result = 31 * result + accounts.hashCode();
+        result = 31 * result + balanceAfterOperation.hashCode();
+        result = 31 * result + date.hashCode();
+        return result;
+    }
+
 }

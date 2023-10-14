@@ -2,6 +2,7 @@ package org.example;
 
 import org.example.in.Menu.Menu;
 import org.example.in.PropertiesBD;
+import org.example.out.DAO.PlayerDAO;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -20,8 +21,9 @@ public class App
 {
     public static void main( String[] args )
     {
+        Connection conn;
         try {
-            Connection conn = DriverManager.getConnection(
+             conn = DriverManager.getConnection(
                     PropertiesBD.getInstance().getDBPath(),
                     PropertiesBD.getInstance().getLogin(),
                     PropertiesBD.getInstance().getPassword()
@@ -30,7 +32,7 @@ public class App
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
+        PlayerDAO playerDAO = new PlayerDAO(conn);
 
         Menu.menuNotLoggined();
 

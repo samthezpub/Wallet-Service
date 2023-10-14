@@ -10,7 +10,7 @@ public class PropertiesBD {
     private Properties properties = new Properties();
 
     private PropertiesBD() throws IOException {
-            File file = new File("src/main/resources/db.properties");
+            File file = new File("src/main/resources/liquibase.properties");
             FileInputStream in = new FileInputStream(file);
             properties.load(in);
 
@@ -28,7 +28,7 @@ public class PropertiesBD {
     }
 
     public String getLogin(){
-        return properties.get("login").toString();
+        return properties.get("username").toString();
     }
 
     public String getPassword(){
@@ -36,7 +36,7 @@ public class PropertiesBD {
     }
 
     public String getDBPath(){
-        return properties.get("path").toString();
+        return properties.get("url").toString();
     }
 
     public Properties getProperties() {

@@ -6,14 +6,14 @@ xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liqui
 
 <changeSet id="create-table-player" author="me">
     <createTable schemaName="entities" tableName="player">
-        <column name="id" type="int" autoIncrement="true">
+        <column startWith="1" incrementBy="1" name="id" type="int" autoIncrement="true">
             <constraints nullable="false" primaryKey="true"/>
         </column>
         <column name="balance" type="double"/>
         <column name="credit_balance" type="double"/>
         <column name="login" type="varchar(64)"/>
         <column name="password" type="varchar(64)"/>
-        <column name="isLogined" type="boolean"/>
+        <column name="is_logined" type="boolean"/>
 
 
     </createTable>

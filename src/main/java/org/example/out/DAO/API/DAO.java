@@ -1,5 +1,7 @@
 package org.example.out.DAO.API;
 
+import org.example.out.Dispatchers.Player;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -10,7 +12,10 @@ public interface DAO<T>{
 
     void save(T t);
 
-    void update(T t, String[] params);
+    void update(T t);
 
-    void delete(T t);
+    void update(Player player);
+
+    void delete(int id);
+
 }

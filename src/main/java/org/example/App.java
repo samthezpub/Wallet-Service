@@ -3,6 +3,7 @@ package org.example;
 import org.example.in.Menu.Menu;
 import org.example.in.PropertiesBD;
 import org.example.out.DAO.PlayerDAO;
+import org.example.out.Dispatchers.Player;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -28,14 +29,17 @@ public class App
                     PropertiesBD.getInstance().getLogin(),
                     PropertiesBD.getInstance().getPassword()
             );
-
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        PlayerDAO playerDAO = new PlayerDAO(conn);
+        PlayerDAO.setConnection(conn);
+        PlayerDAO playerDAO = new PlayerDAO();
+
+        Player player = playerDAO.get(0).get();
+        player.setLogin("2021423");
+        playerDAO.delete(0);
+
 
         Menu.menuNotLoggined();
-
-
     }
 }

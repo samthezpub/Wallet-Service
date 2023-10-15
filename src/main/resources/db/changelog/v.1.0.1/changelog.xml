@@ -6,7 +6,7 @@ xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liqui
 
 <changeSet id="create-table-player" author="me">
     <createTable schemaName="entities" tableName="player">
-        <column startWith="1" incrementBy="1" name="id" type="int" autoIncrement="true">
+        <column name="id" type="int" >
             <constraints nullable="false" primaryKey="true"/>
         </column>
         <column name="balance" type="double"/>

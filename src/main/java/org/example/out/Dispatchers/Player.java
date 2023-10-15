@@ -51,13 +51,13 @@ public class Player implements IPlayer {
      * @throws TransactionException если value <= 0
      */
     @Override
-    public void deposit(double value) throws TransactionException {
+    public void deposit(Dispatch dispatch,double value) throws TransactionException {
         try {
             checkIsLogin();
         } catch (LoginException e) {
             throw new RuntimeException(e);
         }
-        this.accounts = Dispatch.deposit(this.id, value);
+        dispatch.deposit(this.id, value);
     }
 
     /**
@@ -68,7 +68,7 @@ public class Player implements IPlayer {
      * @throws LoginException       если пользователь не авторизовался шлёт исключение
      */
     @Override
-    public void withdraw(double value) {
+    public void withdraw(Dispatch dispatch,double value) {
         try {
             checkIsLogin();
         } catch (LoginException e) {
@@ -76,7 +76,7 @@ public class Player implements IPlayer {
         }
 
         try {
-            accounts = Dispatch.withdrawPlayerBalance(this.id, value);
+            dispatch.withdrawPlayerBalance(this.id, value);
         } catch (TransactionException e) {
             System.err.println(e.getMessage());
         }
@@ -91,7 +91,7 @@ public class Player implements IPlayer {
      *
      */
     @Override
-    public void takeCredit(double value) {
+    public void takeCredit(Dispatch dispatch,double value) {
         try {
             checkIsLogin();
         } catch (LoginException e) {
@@ -99,7 +99,7 @@ public class Player implements IPlayer {
         }
 
         try {
-            accounts = Dispatch.takeCredit(this.id, value);
+            dispatch.takeCredit(this.id, value);
 
         } catch (TransactionException e) {
             System.err.println(e.getMessage());
@@ -109,15 +109,15 @@ public class Player implements IPlayer {
     }
 
     @Override
-    public void register(String login, String password) throws LoginException {
-        Dispatch.registerPlayer(login, password);
+    public void register(Dispatch dispatch,String login, String password) throws LoginException {
+        dispatch.registerPlayer(login, password);
     }
 
 
     @Override
-    public void logIn(String login, String password) throws NotFindException {
+    public void logIn(Dispatch dispatch,String login, String password) throws NotFindException {
 
-       Player result = Dispatch.authenticationPlayer(login, password);
+       Player result = dispatch.authenticationPlayer(login, password);
        this.id = result.getId();
        this.accounts = result.getAccounts();
        this.login = result.getLogin();
@@ -126,24 +126,25 @@ public class Player implements IPlayer {
     }
 
     @Override
-    public void logOut(Player player) {
-        Dispatch.logoutPlayer(this.id);
+    public void logOut(Dispatch dispatch,Player player) {
+        dispatch.logoutPlayer(this.id);
     }
 
     @Override
-    public BalanceResult getBalance() {
+    public BalanceResult getBalance(Dispatch dispatch) {
 
-        return Dispatch.getBalance(this.id);
+        return dispatch.getBalance(this.id);
     }
 
+
     @Override
-    public Set<Transaction> getTransactions() {
+    public Set<Transaction> getTransactions(Dispatch dispatch) {
         try {
             checkIsLogin();
         } catch (LoginException e) {
             throw new RuntimeException(e);
         }
-        return Dispatch.getTransactionsByPlayerId(this.id);
+        return dispatch.getTransactionsByPlayerId(this.id);
     }
 
 

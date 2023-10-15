@@ -1,6 +1,4 @@
-package org.example.out.DAO.API;
-
-import org.example.out.Dispatchers.Player;
+package org.example.out.Repository.API;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,7 +12,6 @@ public interface DAO<T>{
 
     void update(T t);
 
-    void update(Player player);
 
     void delete(int id);
 

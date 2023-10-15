@@ -7,12 +7,14 @@ import org.example.out.Dispatchers.Transaction;
 import org.example.out.Exceptions.LoginException;
 import org.example.out.Exceptions.NotFindException;
 import org.example.out.Exceptions.TransactionException;
+import org.example.out.Utils.BalanceResult;
 
 import java.util.Scanner;
 import java.util.Set;
 
 public class Menu {
     private static Player player = new Player();
+    private static Dispatch dispatch = new Dispatch();
     private static Scanner scanner = new Scanner(System.in);
 
 
@@ -53,7 +55,7 @@ public class Menu {
 
 
         try {
-            player.register(login, password);
+            player.register(dispatch,login, password);
         } catch (LoginException e) {
             System.err.println(e.getMessage());
             menuNotLoggined();
@@ -91,7 +93,7 @@ public class Menu {
         }
 
         try {
-            player.logIn(login, password);
+            player.logIn(dispatch,login, password);
 
             menuLoggined();
         } catch (NotFindException e) {
@@ -111,7 +113,7 @@ public class Menu {
         try {
             value = Double.parseDouble(scanner.next());
             try {
-                player.deposit(value);
+                player.deposit(dispatch,value);
                 getBalance();
                 return;
             } catch (TransactionException e) {
@@ -132,7 +134,7 @@ public class Menu {
 
         try {
             value = Double.parseDouble(scanner.next());
-            player.withdraw(value);
+            player.withdraw(dispatch, value);
 
             getBalance();
         } catch (NumberFormatException e) {
@@ -151,7 +153,7 @@ public class Menu {
 
         try {
             value = Double.parseDouble(scanner.next());
-            player.takeCredit(value);
+            player.takeCredit(dispatch, value);
             getBalance();
             menuLoggined();
         } catch (NumberFormatException e) {
@@ -161,14 +163,14 @@ public class Menu {
     }
 
     private static void logout() {
-        player.logOut(player);
+        player.logOut(dispatch, player);
         System.out.println("Вы вышли из аккаунта!");
         System.out.println("Всего хорошего!");
         menuNotLoggined();
     }
 
     public static void getTransactions() {
-        Set<Transaction> transtactionsSet = player.getTransactions();
+        Set<Transaction> transtactionsSet = player.getTransactions(dispatch);
 
         if (transtactionsSet.size() == 0) {
             System.out.println("Тут пока нет транзакций!");
@@ -182,10 +184,12 @@ public class Menu {
     }
 
     public static void getBalance() {
+        BalanceResult balanceResult = player.getBalance(dispatch);
+
         System.out.println("Ваш баланс");
-        System.out.println("Общий: " + player.getAccounts().getBalance());
-        System.out.println("Кредитный: " + player.getAccounts().getCreditBalance());
-        System.out.println("Ваши деньги: " + (player.getAccounts().getBalance() - player.getAccounts().getCreditBalance()));
+        System.out.println("Общий: " + balanceResult.getBalance());
+        System.out.println("Кредитный: " + balanceResult.getCreditBalance());
+        System.out.println("Ваши деньги: " + (balanceResult.getBalance() - balanceResult.getCreditBalance()));
 
         menuLoggined();
     }

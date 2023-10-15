@@ -1,7 +1,8 @@
 package org.example.out.Dispatchers;
 
 import lombok.Data;
-import org.example.out.Common.Audit;
+import org.example.out.Repository.PlayerDAO;
+import org.example.out.Repository.TransactionDAO;
 import org.example.out.Enums.TransactionTypeEnum;
 import org.example.out.Exceptions.LoginException;
 import org.example.out.Exceptions.NotFindException;
@@ -12,44 +13,43 @@ import java.util.*;
 
 @Data
 public class Dispatch {
-    private static List<Player> players = new ArrayList<>();
 
-    public static Set<Transaction> getTransactionsByPlayerId(Integer id) {
-        return Audit.findTransactionsByPlayerId(id);
+    private PlayerDAO playerDAO = new PlayerDAO();
+    private TransactionDAO transactionDAO = new TransactionDAO();
+
+    public Set<Transaction> getTransactionsByPlayerId(Integer id) {
+        return transactionDAO.findTransactionsByPlayerId(id);
     }
 
-    private static void addTransaction(Transaction transaction) {
-            Audit.addTransaction(transaction);
+    private void addTransaction(Transaction transaction) {
+        transactionDAO.save(transaction);
     }
 
-    public static void addPlayer(int id, BalanceResult account, String login, String password) {
+    public void addPlayer(int id, BalanceResult account, String login, String password) {
         Player player = new Player(id, account, login, password);
-        players.add(player);
+
+        playerDAO.save(player);
     }
 
-    private static int findPlayerById(int id) throws NotFindException {
-        for (Player player : players) {
-            if (player.getId().equals(id)) {
-                return players.indexOf(player);
-            }
-        }
-
-        throw new NotFindException("Пользователь не найден!");
+    private Optional<Player> findPlayerById(int id) {
+        return playerDAO.get(id);
     }
 
-    public static void registerPlayer(String login, String password) throws LoginException {
+    public void registerPlayer(String login, String password) throws LoginException {
+        List<Player> players = playerDAO.getAll();
         for (Player player : players) {
             if (player.getLogin().equals(login)) {
                 throw new LoginException("Пользователь с таким логином уже существует!");
             }
         }
-
+        // TODO id sequence
         addPlayer(players.size(), new BalanceResult(0, 0), login, password);
     }
 
 
-    public static Player authenticationPlayer(String login, String password) throws NotFindException {
-        for (Player playerIterable : players) {
+    public Player authenticationPlayer(String login, String password) throws NotFindException {
+        List<Player> playersBD = playerDAO.getAll();
+        for (Player playerIterable : playersBD) {
             if (playerIterable.getLogin().equals(login) && playerIterable.getPassword().equals(password)) {
                 Player findedPlayer = new Player(playerIterable.getId(),
                         playerIterable.getAccounts(),
@@ -67,116 +67,109 @@ public class Dispatch {
     // Метод для получения данных об аккаунте из списка по id пользователя
 
 
-    public static BalanceResult deposit(int player_id, double value) throws TransactionException {
+    public void deposit(int player_id, double value) throws TransactionException {
         if (value <= 0) {
             throw new TransactionException("Нельзя использовать отрицательные значения и 0");
         }
 
-        int elementPosition;
-        try {
-            elementPosition = findPlayerById(player_id);
-        } catch (NotFindException e) {
-            throw new RuntimeException(e.getMessage());
-
-        }
-        BalanceResult playerAccounts = players.get(elementPosition).getAccounts();
-
-        BalanceResult result = new BalanceResult(
-                players.get(elementPosition).getAccounts().getBalance() + value,
-                players.get(elementPosition).getAccounts().getCreditBalance());
-        players.get(elementPosition).setAccounts(result);
-
-        Transaction transaction = new Transaction(player_id, TransactionTypeEnum.DEPOSIT, playerAccounts, result);
-        addTransaction(transaction);
-    return result;
-
-    }
-
-    public static BalanceResult withdrawPlayerBalance(int player_id, double value) throws TransactionException {
-        int elementPosition;
 
         try {
-            elementPosition = findPlayerById(player_id);
+            Player player = playerDAO.get(player_id).orElseThrow(() -> new NotFindException("Пользователь не найден"));
+
+            BalanceResult result = new BalanceResult(
+                    player.getAccounts().getBalance() + value,
+                    player.getAccounts().getCreditBalance());
+            player.setAccounts(result);
+
+            playerDAO.update(player);
+
+            Transaction transaction = new Transaction(player_id, TransactionTypeEnum.DEPOSIT, player.getAccounts(), result);
+            addTransaction(transaction);
         } catch (NotFindException e) {
             throw new RuntimeException(e);
         }
 
-        BalanceResult playerAccounts = players.get(elementPosition).getAccounts();
 
-        if (value <= 0) {
-            throw new TransactionException("Нельзя использовать отрицательные значения и 0");
-        }
-        if (playerAccounts.getBalance() - value < 0) {
-            throw new TransactionException("На балансе недостаточно средств!");
-        }
-
-
-
-
-        BalanceResult result = new BalanceResult(
-                players.get(elementPosition).getAccounts().getBalance() - value,
-                players.get(elementPosition).getAccounts().getCreditBalance());
-
-        players.get(elementPosition).setAccounts(result);
-
-        Transaction transaction = new Transaction(player_id, TransactionTypeEnum.WITHDRAW, playerAccounts, result);
-        addTransaction(transaction);
-        return result;
     }
 
-    public static BalanceResult takeCredit(int player_id, double value) throws TransactionException {
-        if (value <= 0) {
-            throw new TransactionException("Нельзя использовать отрицательные значения и 0");
-        }
-
-        int elementPosition;
-
+    public void withdrawPlayerBalance(int player_id, double value) throws TransactionException {
         try {
-            elementPosition = findPlayerById(player_id);
-        } catch (NotFindException e) {
-            throw new RuntimeException(e);
-        }
-        BalanceResult playerAccounts = players.get(elementPosition).getAccounts();
+            Player player = findPlayerById(player_id).orElseThrow(() -> new NotFindException("Пользователь не найден!"));
 
-        BalanceResult result = new BalanceResult(
-                players.get(elementPosition).getAccounts().getBalance() + value,
-                players.get(elementPosition).getAccounts().getCreditBalance() + value);
-
-        players.get(elementPosition).setAccounts(result);
-
-        Transaction transaction = new Transaction(player_id, TransactionTypeEnum.CREDIT, playerAccounts, result);
-        addTransaction(transaction);
-        return result;
-
-    }
-
-    public static BalanceResult getBalance(int playerId) {
-        int elementPosition;
-        try {
-            elementPosition = findPlayerById(playerId);
-        } catch (NotFindException e) {
-            throw new RuntimeException(e);
-        }
-
-        return players.get(elementPosition).getAccounts();
-    }
-
-    public static List<Player> getPlayers() {
-        return players;
-    }
-
-    public static void setPlayers(List<Player> players) {
-        Dispatch.players = players;
-    }
-
-    public static void logoutPlayer(int player_id) {
-        for (Player playerIterable : players) {
-            if (playerIterable.getId().equals(player_id)) {
-                players.remove(playerIterable);
-
-                players.add(playerIterable);
-                break;
+            if (value <= 0) {
+                throw new TransactionException("Нельзя использовать отрицательные значения и 0");
             }
+            if (player.getAccounts().getBalance() - value < 0) {
+                throw new TransactionException("На балансе недостаточно средств!");
+            }
+
+            BalanceResult playerAccounts = player.getAccounts();
+
+            BalanceResult result = new BalanceResult(
+                    player.getAccounts().getBalance() - value,
+                    player.getAccounts().getCreditBalance());
+
+            player.setAccounts(result);
+
+            playerDAO.update(player);
+
+            Transaction transaction = new Transaction(player_id, TransactionTypeEnum.WITHDRAW, playerAccounts, result);
+            addTransaction(transaction);
+
+
+        } catch (NotFindException e) {
+            throw new RuntimeException(e);
+        }
+
+
+    }
+
+    public void takeCredit(int player_id, double value) throws TransactionException {
+        if (value <= 0) {
+            throw new TransactionException("Нельзя использовать отрицательные значения и 0");
+        }
+
+        try {
+            Player player = findPlayerById(player_id).orElseThrow(() -> new NotFindException("Пользователь не найден!"));
+
+            BalanceResult playerAccounts = player.getAccounts();
+
+            BalanceResult result = new BalanceResult(
+                    player.getAccounts().getBalance() + value,
+                    player.getAccounts().getCreditBalance() + value);
+
+            player.setAccounts(result);
+
+            playerDAO.update(player);
+
+            Transaction transaction = new Transaction(player_id, TransactionTypeEnum.CREDIT, playerAccounts, result);
+            addTransaction(transaction);
+        } catch (NotFindException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public BalanceResult getBalance(int playerId) {
+        try {
+            Player player = findPlayerById(playerId).orElseThrow(() -> new NotFindException("Пользователь не найден!"));
+
+            return player.getAccounts();
+        } catch (NotFindException e) {
+            throw new RuntimeException(e);
+        }
+
+
+    }
+
+
+    public void logoutPlayer(int player_id) {
+        try {
+            Player player = playerDAO.get(player_id).orElseThrow(() -> new NotFindException("Пользователь не найден!"));
+            player.setLogined(false);
+
+            playerDAO.update(player);
+        } catch (NotFindException e) {
+            throw new RuntimeException(e);
         }
     }
 }

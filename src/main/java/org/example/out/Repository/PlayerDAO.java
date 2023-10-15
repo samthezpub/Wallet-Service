@@ -1,7 +1,6 @@
-package org.example.out.DAO;
+package org.example.out.Repository;
 
-import liquibase.structure.core.Sequence;
-import org.example.out.DAO.API.DAO;
+import org.example.out.Repository.API.DAO;
 import org.example.out.Dispatchers.Player;
 import org.example.out.Utils.BalanceResult;
 
@@ -71,26 +70,24 @@ public class PlayerDAO implements DAO<Player> {
 
     @Override
     public void save(Player player) {
-        // TODO
-        String sqlSequence = "SELECT identity_start, identity_increment FROM information_schema.columns WHERE table_name = 'player' AND table_schema = 'entities'";
+        String sqlSequence = "SELECT nextval('service.my_sequence') as generated_id";
+
+        Long generatedId;
         try (PreparedStatement preparedStatement = connection.prepareStatement(sqlSequence)) {
 
             ResultSet resultSet = preparedStatement.executeQuery();
             resultSet.next();
-            System.out.println(resultSet.getInt("identity_start"));
-            System.out.println(resultSet.getInt("identity_increment"));
+
+            generatedId = resultSet.getLong("generated_id");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
 
 
         String sql = "INSERT INTO entities.player(id, balance, credit_balance, login, password, is_logined) VALUES (?, ?, ?, ?, ?, ?)";
-
-        Sequence sequence = new Sequence();
-
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 
-            preparedStatement.setInt(1, sequence.getIncrementBy().intValue());
+            preparedStatement.setInt(1, generatedId.intValue());
             preparedStatement.setDouble(2, player.getAccounts().getBalance());
             preparedStatement.setDouble(3, player.getAccounts().getCreditBalance());
             preparedStatement.setString(4, player.getLogin());
@@ -126,7 +123,7 @@ public class PlayerDAO implements DAO<Player> {
     @Override
     public void delete(int id) {
         String sql = "DELETE FROM entities.player WHERE id = ?";
-        try(PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setInt(1, id);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {

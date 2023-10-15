@@ -19,7 +19,6 @@ public class Transaction {
     private Date date;
 
     public Transaction(Integer playerId, TransactionTypeEnum type, BalanceResult accounts, BalanceResult balanceAfterOperation) {
-        id = nextId++;
         this.playerId = playerId;
         this.type = type;
         this.accounts = accounts;

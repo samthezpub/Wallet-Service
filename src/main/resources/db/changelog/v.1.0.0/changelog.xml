@@ -7,7 +7,17 @@
             ALTER SCHEMA public RENAME TO service;
         </sql>
     </changeSet>
-    <changeSet id="1" author="me">
+    <changeSet id="createEntitiesSchema" author="me">
         <sql>CREATE SCHEMA entities</sql>
     </changeSet>
+
+        <changeSet id="create-sequence" author="me">
+            <createSequence
+                    sequenceName="my_sequence"
+                    incrementBy="1"
+                    startValue="1"
+                    minValue="1"
+                    maxValue="10000"/>
+        </changeSet>
+
 </databaseChangeLog>

@@ -2,11 +2,11 @@ package org.example.out.Repository;
 
 import org.example.out.Repository.API.DAO;
 import org.example.out.Dispatchers.Transaction;
+import org.example.out.Utils.BalanceResult;
 
 import java.sql.*;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.sql.Date;
+import java.util.*;
 
 public class TransactionDAO implements DAO<Transaction> {
 
@@ -23,7 +23,34 @@ public class TransactionDAO implements DAO<Transaction> {
 
 
     public Set<Transaction> findTransactionsByPlayerId(Integer id) {
-        return null;
+        Set<Transaction> userTransactions = new LinkedHashSet<>();
+        String sql = "SELECT * FROM entities.transaction WHERE player_id=?";
+        try(PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setInt(1, id);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()){
+                Transaction transaction = new Transaction(
+                        resultSet.getInt("player_id"),
+                        resultSet.getInt("type"),
+                        new BalanceResult(
+                                resultSet.getDouble("balance_before"),
+                                resultSet.getDouble("credit_before")
+                        ),
+                        new BalanceResult(
+                                resultSet.getDouble("balance_after"),
+                                resultSet.getDouble("credit_after")
+                        )
+                );
+                transaction.setId(resultSet.getInt("id"));
+
+                userTransactions.add(transaction);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return userTransactions;
     }
 
     @Override
@@ -37,16 +64,17 @@ public class TransactionDAO implements DAO<Transaction> {
             resultSet.next();
 
             generatedId = resultSet.getLong("generated_id");
+            transaction.setId(generatedId.intValue());
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
 
 
-        String sql = "INSERT INTO entities.transaction(id, player_id, type, balanceBefore, creditBefore, balanceAfter, creditAfter, date) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO entities.transaction(id, player_id, type, balance_before, credit_before, balance_after, credit_after, date) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try(PreparedStatement preparedStatement = connection.prepareStatement(sql)){
-            preparedStatement.setInt(1, generatedId.intValue());
+            preparedStatement.setInt(1, transaction.getId());
             preparedStatement.setInt(2, transaction.getPlayerId());
-            preparedStatement.setInt(3, typeId);
+            preparedStatement.setInt(3, transaction.getTypeId());
             preparedStatement.setDouble(4, transaction.getAccounts().getBalance());
             preparedStatement.setDouble(5, transaction.getAccounts().getCreditBalance());
             preparedStatement.setDouble(6, transaction.getBalanceAfterOperation().getBalance());
@@ -54,6 +82,8 @@ public class TransactionDAO implements DAO<Transaction> {
 
             Date date = new Date(transaction.getDate().getTime());
             preparedStatement.setDate(8, date);
+
+            preparedStatement.executeUpdate();
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -72,5 +102,7 @@ public class TransactionDAO implements DAO<Transaction> {
 
     }
 
-
+    public static void setConnection(Connection connection) {
+        TransactionDAO.connection = connection;
+    }
 }

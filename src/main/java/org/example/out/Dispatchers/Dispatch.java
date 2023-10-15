@@ -9,6 +9,10 @@ import org.example.out.Exceptions.NotFindException;
 import org.example.out.Exceptions.TransactionException;
 import org.example.out.Utils.BalanceResult;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.*;
 
 @Data
@@ -16,6 +20,7 @@ public class Dispatch {
 
     private PlayerDAO playerDAO = new PlayerDAO();
     private TransactionDAO transactionDAO = new TransactionDAO();
+
 
     public Set<Transaction> getTransactionsByPlayerId(Integer id) {
         return transactionDAO.findTransactionsByPlayerId(id);
@@ -27,7 +32,6 @@ public class Dispatch {
 
     public void addPlayer(int id, BalanceResult account, String login, String password) {
         Player player = new Player(id, account, login, password);
-
         playerDAO.save(player);
     }
 
@@ -79,11 +83,14 @@ public class Dispatch {
             BalanceResult result = new BalanceResult(
                     player.getAccounts().getBalance() + value,
                     player.getAccounts().getCreditBalance());
+
+            Transaction transaction = new Transaction(player_id,0 , player.getAccounts(), result);
             player.setAccounts(result);
 
-            playerDAO.update(player);
 
-            Transaction transaction = new Transaction(player_id, TransactionTypeEnum.DEPOSIT, player.getAccounts(), result);
+
+
+            playerDAO.update(player);
             addTransaction(transaction);
         } catch (NotFindException e) {
             throw new RuntimeException(e);
@@ -113,7 +120,7 @@ public class Dispatch {
 
             playerDAO.update(player);
 
-            Transaction transaction = new Transaction(player_id, TransactionTypeEnum.WITHDRAW, playerAccounts, result);
+            Transaction transaction = new Transaction(player_id, 1, playerAccounts, result);
             addTransaction(transaction);
 
 
@@ -142,7 +149,7 @@ public class Dispatch {
 
             playerDAO.update(player);
 
-            Transaction transaction = new Transaction(player_id, TransactionTypeEnum.CREDIT, playerAccounts, result);
+            Transaction transaction = new Transaction(player_id, 2, playerAccounts, result);
             addTransaction(transaction);
         } catch (NotFindException e) {
             throw new RuntimeException(e);

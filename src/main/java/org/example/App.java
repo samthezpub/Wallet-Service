@@ -2,7 +2,10 @@ package org.example;
 
 import org.example.in.Menu.Menu;
 import org.example.in.PropertiesBD;
+import org.example.out.Dispatchers.Transaction;
+import org.example.out.Dispatchers.TransactionType;
 import org.example.out.Repository.PlayerDAO;
+import org.example.out.Repository.TransactionDAO;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -27,8 +30,11 @@ public class App
             throw new RuntimeException(e);
         }
         PlayerDAO.setConnection(conn);
+        TransactionDAO.setConnection(conn);
         PlayerDAO playerDAO = new PlayerDAO();
+        TransactionDAO transactionDAO = new TransactionDAO();
 
+        System.out.println(transactionDAO.findTransactionsByPlayerId(1));
 
 
         Menu.menuNotLoggined();

@@ -15,10 +15,10 @@
             <column name="type" type="int">
                 <constraints foreignKeyName="fk_type_id"/>
             </column>
-            <column name="balanceBefore" type="double"></column>
-            <column name="creditBefore" type="double"></column>
-            <column name="balanceAfter" type="double"></column>
-            <column name="creditAfter" type="double"></column>
+            <column name="balance_before" type="double"></column>
+            <column name="credit_before" type="double"></column>
+            <column name="balance_after" type="double"></column>
+            <column name="credit_after" type="double"></column>
             <column name="date" type="date"></column>
         </createTable>
     </changeSet>

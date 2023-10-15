@@ -1,6 +1,7 @@
-package org.example.out.Dispatchers;
+package org.example.out.Models;
 
 import lombok.Data;
+import org.example.out.Common.Dispatch;
 import org.example.out.Exceptions.LoginException;
 import org.example.out.Exceptions.NotFindException;
 import org.example.out.Exceptions.TransactionException;
@@ -51,7 +52,7 @@ public class Player implements IPlayer {
      * @throws TransactionException если value <= 0
      */
     @Override
-    public void deposit(Dispatch dispatch,double value) throws TransactionException {
+    public void deposit(Dispatch dispatch, double value) throws TransactionException {
         try {
             checkIsLogin();
         } catch (LoginException e) {

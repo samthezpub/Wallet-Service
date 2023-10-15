@@ -2,8 +2,6 @@ package org.example;
 
 import org.example.in.Menu.Menu;
 import org.example.in.PropertiesBD;
-import org.example.out.Dispatchers.Transaction;
-import org.example.out.Dispatchers.TransactionType;
 import org.example.out.Repository.PlayerDAO;
 import org.example.out.Repository.TransactionDAO;
 

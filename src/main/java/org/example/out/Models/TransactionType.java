@@ -1,4 +1,4 @@
-package org.example.out.Dispatchers;
+package org.example.out.Models;
 
 public class TransactionType {
     private int id;

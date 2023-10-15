@@ -1,6 +1,6 @@
 package org.example.out.Service;
 
-import org.example.out.Dispatchers.Transaction;
+import org.example.out.Models.Transaction;
 
 import java.util.Set;
 

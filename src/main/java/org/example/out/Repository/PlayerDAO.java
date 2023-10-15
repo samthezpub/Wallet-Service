@@ -1,7 +1,7 @@
 package org.example.out.Repository;
 
 import org.example.out.Repository.API.DAO;
-import org.example.out.Dispatchers.Player;
+import org.example.out.Models.Player;
 import org.example.out.Utils.BalanceResult;
 
 import java.sql.Connection;

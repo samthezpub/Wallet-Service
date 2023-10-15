@@ -1,7 +1,6 @@
 package org.example.out.Repository;
 
-import org.example.out.Dispatchers.TransactionType;
-import org.example.out.Enums.TransactionTypeEnum;
+import org.example.out.Models.TransactionType;
 import org.example.out.Repository.API.DAO;
 
 import java.util.List;

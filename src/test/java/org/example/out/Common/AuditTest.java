@@ -1,6 +1,6 @@
 package org.example.out.Common;
 
-import org.example.out.Dispatchers.Transaction;
+import org.example.out.Models.Transaction;
 import org.example.out.Enums.TransactionTypeEnum;
 import org.example.out.Utils.BalanceResult;
 import org.junit.jupiter.api.Assertions;

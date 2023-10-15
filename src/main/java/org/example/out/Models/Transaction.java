@@ -1,12 +1,9 @@
-package org.example.out.Dispatchers;
+package org.example.out.Models;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.example.out.Enums.TransactionTypeEnum;
 import org.example.out.Utils.BalanceResult;
 
 import java.util.Date;
-import java.util.Properties;
 
 @Data
 public class Transaction {

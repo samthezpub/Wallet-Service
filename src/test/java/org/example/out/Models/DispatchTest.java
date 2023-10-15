@@ -1,23 +1,16 @@
-package org.example.out.Dispatchers;
+package org.example.out.Models;
 
-import org.example.out.Dispatchers.Dispatch;
-import org.example.out.Dispatchers.Player;
-import org.example.out.Dispatchers.Transaction;
-import org.example.out.Enums.TransactionTypeEnum;
+import org.example.out.Common.Dispatch;
 import org.example.out.Exceptions.LoginException;
 import org.example.out.Exceptions.NotFindException;
 import org.example.out.Exceptions.TransactionException;
 import org.example.out.Utils.BalanceResult;
-import org.junit.Before;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 

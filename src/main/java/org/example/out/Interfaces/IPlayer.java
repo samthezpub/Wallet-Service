@@ -1,8 +1,8 @@
 package org.example.out.Interfaces;
 
-import org.example.out.Dispatchers.Dispatch;
-import org.example.out.Dispatchers.Player;
-import org.example.out.Dispatchers.Transaction;
+import org.example.out.Common.Dispatch;
+import org.example.out.Models.Player;
+import org.example.out.Models.Transaction;
 import org.example.out.Exceptions.LoginException;
 import org.example.out.Exceptions.NotFindException;
 import org.example.out.Exceptions.TransactionException;

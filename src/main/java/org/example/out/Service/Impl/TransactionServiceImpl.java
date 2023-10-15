@@ -1,7 +1,7 @@
 package org.example.out.Service.Impl;
 
 import org.example.out.Repository.TransactionDAO;
-import org.example.out.Dispatchers.Transaction;
+import org.example.out.Models.Transaction;
 import org.example.out.Service.TransactionService;
 
 import java.util.Date;

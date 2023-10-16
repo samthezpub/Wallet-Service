@@ -10,6 +10,9 @@ import java.util.Set;
 public class TransactionServiceImpl implements TransactionService {
     private static TransactionDAO transactionDAO;
 
+    public TransactionServiceImpl() {
+    }
+
     public TransactionServiceImpl(TransactionDAO transactionDAO) {
         this.transactionDAO = transactionDAO;
     }
@@ -25,5 +28,9 @@ public class TransactionServiceImpl implements TransactionService {
 
         transaction.setDate(date);
         transactionDAO.save(transaction);
+    }
+
+    public static void setTransactionDAO(TransactionDAO transactionDAO) {
+        TransactionServiceImpl.transactionDAO = transactionDAO;
     }
 }

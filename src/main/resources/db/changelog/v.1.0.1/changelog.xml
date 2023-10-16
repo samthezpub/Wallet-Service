@@ -13,7 +13,6 @@ xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liqui
         <column name="credit_balance" type="double"/>
         <column name="login" type="varchar(64)"/>
         <column name="password" type="varchar(64)"/>
-        <column name="is_logined" type="boolean"/>
 
 
     </createTable>

@@ -4,6 +4,8 @@ import org.example.in.Menu.Menu;
 import org.example.in.PropertiesBD;
 import org.example.out.Repository.PlayerDAO;
 import org.example.out.Repository.TransactionDAO;
+import org.example.out.Service.Impl.PlayerServiceImpl;
+import org.example.out.Service.Impl.TransactionServiceImpl;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -31,9 +33,8 @@ public class App
         TransactionDAO.setConnection(conn);
         PlayerDAO playerDAO = new PlayerDAO();
         TransactionDAO transactionDAO = new TransactionDAO();
-
-        System.out.println(transactionDAO.findTransactionsByPlayerId(1));
-
+        PlayerServiceImpl.setPlayerDAO(playerDAO);
+        TransactionServiceImpl.setTransactionDAO(transactionDAO);
 
         Menu.menuNotLoggined();
     }

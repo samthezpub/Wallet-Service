@@ -57,7 +57,6 @@ public class Dispatch {
                         playerIterable.getLogin(),
                         playerIterable.getPassword());
 
-                findedPlayer.setLogined(true);
                 return findedPlayer;
             }
         }
@@ -169,7 +168,6 @@ public class Dispatch {
     public void logoutPlayer(int player_id) {
         try {
             Player player = playerDAO.get(player_id).orElseThrow(() -> new NotFindException("Пользователь не найден!"));
-            player.setLogined(false);
 
             playerDAO.update(player);
         } catch (NotFindException e) {

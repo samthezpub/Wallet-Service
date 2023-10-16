@@ -57,7 +57,6 @@ public class PlayerDAO implements DAO<Player> {
                         resultSet.getString("login"),
                         resultSet.getString("password")
                 );
-                player.setLogined(resultSet.getBoolean("is_logined"));
 
                 result.add(player);
             }
@@ -84,7 +83,7 @@ public class PlayerDAO implements DAO<Player> {
         }
 
 
-        String sql = "INSERT INTO entities.player(id, balance, credit_balance, login, password, is_logined) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO entities.player(id, balance, credit_balance, login, password) VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 
             preparedStatement.setInt(1, generatedId.intValue());
@@ -92,7 +91,6 @@ public class PlayerDAO implements DAO<Player> {
             preparedStatement.setDouble(3, player.getAccounts().getCreditBalance());
             preparedStatement.setString(4, player.getLogin());
             preparedStatement.setString(5, player.getPassword());
-            preparedStatement.setBoolean(6, player.isLogined());
 
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
@@ -102,14 +100,13 @@ public class PlayerDAO implements DAO<Player> {
 
     @Override
     public void update(Player player) {
-        String sql = "UPDATE entities.player SET balance=?, credit_balance=?, login=?, password=?, is_logined=? WHERE id=?";
+        String sql = "UPDATE entities.player SET balance=?, credit_balance=?, login=?, password=? WHERE id=?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setDouble(1, player.getAccounts().getBalance());
             preparedStatement.setDouble(2, player.getAccounts().getCreditBalance());
             preparedStatement.setString(3, player.getLogin());
             preparedStatement.setString(4, player.getPassword());
-            preparedStatement.setBoolean(5, player.isLogined());
-            preparedStatement.setInt(6, player.getId());
+            preparedStatement.setInt(5, player.getId());
 
             int rowsUpdated = preparedStatement.executeUpdate();
             if (rowsUpdated == 0) {

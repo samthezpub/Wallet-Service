@@ -18,8 +18,9 @@ public class PlayerServiceImpl implements PlayerService {
 
 
     /**
-     * @param id
-     * @param value
+     * Добавляет деньги на счёт пользователя
+     * @param id - id игрока
+     * @param value - сколько вывести
      * @throws TransactionException
      */
     @Override
@@ -41,8 +42,10 @@ public class PlayerServiceImpl implements PlayerService {
     }
 
     /**
-     * @param id
-     * @param value
+     * Выводит деньги со счёта пользователя
+     * @param id - id игрока
+     * @param value - сколько вывести
+     * @throws TransactionException
      */
     @Override
     public void withdraw(int id, double value) throws TransactionException {
@@ -69,8 +72,10 @@ public class PlayerServiceImpl implements PlayerService {
     }
 
     /**
-     * @param id
-     * @param value
+     * Добавляет в creditMoney игрока заданное значение
+     * @param id id игрока
+     * @param value сколько вывести
+     * @throws TransactionException
      */
     @Override
     public void takeCredit(int id, double value) throws TransactionException {
@@ -91,9 +96,11 @@ public class PlayerServiceImpl implements PlayerService {
     }
 
     /**
-     * @param login
-     * @param password
-     * @throws LoginException
+     * Добавляет запись в базе данных, регистрирует пустого Player
+     * @param login логин
+     * @param password пароль
+     * @throws LoginException если логин уже существует
+     * @see org.example.out.Models.Player
      */
     @Override
     public void register(String login, String password) throws LoginException {
@@ -113,10 +120,11 @@ public class PlayerServiceImpl implements PlayerService {
     }
 
     /**
-     * @param login
-     * @param password
-     * @return
-     * @throws NotFindException
+     * Проверяем есть ли пользователь в базе данных
+     * @param login логин
+     * @param password пароль
+     * @return playerId полученный id
+     * @throws NotFindException если пользователь не найден
      */
     @Override
     public int logIn(String login, String password) throws NotFindException {
@@ -131,8 +139,9 @@ public class PlayerServiceImpl implements PlayerService {
 
 
     /**
-     * @param id
-     * @return
+     * Получает Accounts указанного игрока по id
+     * @param id - игрок
+     * @return BalanceResult
      */
     @Override
     public BalanceResult getBalance(int id) {

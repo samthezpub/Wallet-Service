@@ -15,6 +15,12 @@ import java.util.Optional;
 public class PlayerDAO implements DAO<Player> {
     private static Connection connection;
 
+    /**
+     * Ищет пользователя по id
+     * @param id - id пользователя
+     * @return Optional<Player>
+     * @see Player
+     */
     @Override
     public Optional<Player> get(Integer id) {
         String sql = "SELECT * FROM entities.player WHERE id=?";
@@ -40,6 +46,11 @@ public class PlayerDAO implements DAO<Player> {
         return Optional.empty();
     }
 
+    /**
+     * Возвращает список всех игроков в базе данных
+     * @return List<Player>
+     * @see Player
+     */
     @Override
     public List<Player> getAll() {
         String sql = "SELECT * FROM entities.player";
@@ -67,6 +78,11 @@ public class PlayerDAO implements DAO<Player> {
         return result;
     }
 
+    /**
+     * Сохраняем игрока в базу данных, используем my_sequence
+     * @param player - модель Player
+     * @see Player
+     */
     @Override
     public void save(Player player) {
         String sqlSequence = "SELECT nextval('service.my_sequence') as generated_id";
@@ -98,6 +114,11 @@ public class PlayerDAO implements DAO<Player> {
         }
     }
 
+    /**
+     * Обновляет запись об игроке
+     * @param player - модель Player
+     * @see Player
+     */
     @Override
     public void update(Player player) {
         String sql = "UPDATE entities.player SET balance=?, credit_balance=?, login=?, password=? WHERE id=?";
@@ -117,6 +138,10 @@ public class PlayerDAO implements DAO<Player> {
         }
     }
 
+    /**
+     * Удаляет запись в базе данных по id
+     * @param id - id в базе данных
+     */
     @Override
     public void delete(int id) {
         String sql = "DELETE FROM entities.player WHERE id = ?";

@@ -17,11 +17,20 @@ public class TransactionServiceImpl implements TransactionService {
         this.transactionDAO = transactionDAO;
     }
 
+    /**
+     *  Ищет транзакции по id игрока
+     * @param id id игрока
+     * @return Set<Transaction> LinkedHashSet транзакций
+     */
     @Override
     public Set<Transaction> findTransactionsByPlayerId(Integer id) {
         return transactionDAO.findTransactionsByPlayerId(id);
     }
 
+    /**
+     * Добавляет транзакцию в базу данных
+     * @param transaction транзакция
+     */
     @Override
     public void save(Transaction transaction) {
         Date date = new Date();

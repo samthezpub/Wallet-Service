@@ -22,6 +22,12 @@ public class TransactionDAO implements DAO<Transaction> {
     }
 
 
+    /**
+     * Ищет транзакции с player_id равным аргументу id
+     * @param id - id игрока
+     * @return Set<Transaction>
+     * @see Transaction
+     */
     public Set<Transaction> findTransactionsByPlayerId(Integer id) {
         Set<Transaction> userTransactions = new LinkedHashSet<>();
         String sql = "SELECT * FROM entities.transaction WHERE player_id=?";
@@ -53,6 +59,11 @@ public class TransactionDAO implements DAO<Transaction> {
         return userTransactions;
     }
 
+    /**
+     * Сохраняет транзакцию в базе данных
+     * @param transaction - модель Transaction
+     * @see Transaction
+     */
     @Override
     public void save(Transaction transaction) {
         String sqlSequence = "SELECT nextval('entities.transaction_sequence') as generated_id";

@@ -11,9 +11,30 @@ import java.util.*;
 public class TransactionDAO implements DAO<Transaction> {
 
     private static Connection connection;
+
     @Override
     public Optional<Transaction> get(Integer id) {
-        return Optional.empty();
+        String sql = "SELECT * FROM entities.transaction WHERE id=?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            Transaction transaction = new Transaction(
+                    resultSet.getInt("player_id"),
+                    resultSet.getInt("type"),
+                    new BalanceResult(
+                            resultSet.getDouble("balance_before"),
+                            resultSet.getDouble("credit_before")
+                    ),
+                    new BalanceResult(
+                            resultSet.getDouble("balance_after"),
+                            resultSet.getDouble("credit_after")
+                    )
+            );
+
+            return Optional.of(transaction);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -24,6 +45,7 @@ public class TransactionDAO implements DAO<Transaction> {
 
     /**
      * Ищет транзакции с player_id равным аргументу id
+     *
      * @param id - id игрока
      * @return Set<Transaction>
      * @see Transaction
@@ -31,11 +53,11 @@ public class TransactionDAO implements DAO<Transaction> {
     public Set<Transaction> findTransactionsByPlayerId(Integer id) {
         Set<Transaction> userTransactions = new LinkedHashSet<>();
         String sql = "SELECT * FROM entities.transaction WHERE player_id=?";
-        try(PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setInt(1, id);
 
             ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()){
+            while (resultSet.next()) {
                 Transaction transaction = new Transaction(
                         resultSet.getInt("player_id"),
                         resultSet.getInt("type"),
@@ -61,6 +83,7 @@ public class TransactionDAO implements DAO<Transaction> {
 
     /**
      * Сохраняет транзакцию в базе данных
+     *
      * @param transaction - модель Transaction
      * @see Transaction
      */
@@ -82,7 +105,7 @@ public class TransactionDAO implements DAO<Transaction> {
 
 
         String sql = "INSERT INTO entities.transaction(id, player_id, type, balance_before, credit_before, balance_after, credit_after, date) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-        try(PreparedStatement preparedStatement = connection.prepareStatement(sql)){
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setInt(1, transaction.getId());
             preparedStatement.setInt(2, transaction.getPlayerId());
             preparedStatement.setInt(3, transaction.getTypeId());
@@ -105,7 +128,6 @@ public class TransactionDAO implements DAO<Transaction> {
     public void update(Transaction transaction) {
 
     }
-
 
 
     @Override

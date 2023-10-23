@@ -29,13 +29,19 @@ public class App
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        PlayerDAO.setConnection(conn);
-        TransactionDAO.setConnection(conn);
         PlayerDAO playerDAO = new PlayerDAO();
+        playerDAO.setConnection(conn);
         TransactionDAO transactionDAO = new TransactionDAO();
+        transactionDAO.setConnection(conn);
         PlayerServiceImpl.setPlayerDAO(playerDAO);
         TransactionServiceImpl.setTransactionDAO(transactionDAO);
 
         Menu.menuNotLoggined();
+
+        try {
+            conn.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

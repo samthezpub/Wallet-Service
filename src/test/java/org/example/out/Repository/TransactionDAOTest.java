@@ -45,7 +45,7 @@ public class TransactionDAOTest {
         }
 
 
-        PlayerDAO.setConnection(connection);
+        transactionDAO.setConnection(connection);
 
         transactionDAO = new TransactionDAO();
 
@@ -75,7 +75,7 @@ public class TransactionDAOTest {
         }
 
 
-        TransactionDAO.setConnection(connection);
+        transactionDAO.setConnection(connection);
 
         transactionDAO = new TransactionDAO();
     }

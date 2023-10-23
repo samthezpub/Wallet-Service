@@ -16,8 +16,8 @@ services:
     container_name: postgres-container
     environment:
       POSTGRES_DB: "wallet"
-      POSTGRES_USER: "vova1"
-      POSTGRES_PASSWORD: "1231234"
+      POSTGRES_USER: "vova"
+      POSTGRES_PASSWORD: "123123"
     ports:
       - "5432:5432"
 

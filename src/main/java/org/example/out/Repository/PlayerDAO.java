@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class PlayerDAO implements DAO<Player> {
-    private static Connection connection;
+    private Connection connection;
 
     /**
      * Ищет пользователя по id
@@ -26,6 +26,35 @@ public class PlayerDAO implements DAO<Player> {
         String sql = "SELECT * FROM entities.player WHERE id=?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setInt(1, id);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                return Optional.of(
+                        new Player(
+                                resultSet.getInt("id"),
+                                new BalanceResult(
+                                        resultSet.getDouble("balance"),
+                                        resultSet.getDouble("credit_balance")
+                                ),
+                                resultSet.getString("login"),
+                                resultSet.getString("password")
+                        )
+                );
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return Optional.empty();
+    }
+
+    /**
+     * Ищет пользователя по логину
+     * @param login передаваемый логин пользователя, по которому ищем
+     * @return Optional<Player>
+     */
+    public Optional<Player> findByLogin(String login){
+        String sql = "SELECT * FROM entities.player WHERE login=?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, login);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 return Optional.of(
@@ -153,11 +182,11 @@ public class PlayerDAO implements DAO<Player> {
         }
     }
 
-    public static Connection getConnection() {
+    public Connection getConnection() {
         return connection;
     }
 
-    public static void setConnection(Connection connection) {
-        PlayerDAO.connection = connection;
+    public void setConnection(Connection connection) {
+        this.connection = connection;
     }
 }

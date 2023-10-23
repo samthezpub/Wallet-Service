@@ -10,6 +10,7 @@ import org.example.out.Repository.TransactionDAO;
 import org.example.out.Service.PlayerService;
 import org.example.out.Utils.BalanceResult;
 
+import java.io.NotActiveException;
 import java.util.List;
 import java.util.Set;
 
@@ -19,13 +20,14 @@ public class PlayerServiceImpl implements PlayerService {
 
     /**
      * Добавляет деньги на счёт пользователя
-     * @param id - id игрока
+     *
+     * @param id    - id игрока
      * @param value - сколько вывести
      * @throws TransactionException
      */
     @Override
     public void deposit(int id, double value) throws TransactionException {
-        if (value <= 0){
+        if (value <= 0) {
             throw new TransactionException("Вы указали недопустимую сумму!");
         }
 
@@ -43,7 +45,8 @@ public class PlayerServiceImpl implements PlayerService {
 
     /**
      * Выводит деньги со счёта пользователя
-     * @param id - id игрока
+     *
+     * @param id    - id игрока
      * @param value - сколько вывести
      * @throws TransactionException
      */
@@ -51,18 +54,18 @@ public class PlayerServiceImpl implements PlayerService {
     public void withdraw(int id, double value) throws TransactionException {
 
 
-        if (value <= 0){
+        if (value <= 0) {
             throw new TransactionException("Вы указали недопустимую сумму!");
         }
 
         Player player = playerDAO.get(id).get();
-        if (player.getAccounts().getBalance() - value < 0){
+        if (player.getAccounts().getBalance() - value < 0) {
             throw new TransactionException("Недостаточно денег на балансе!");
         }
 
         BalanceResult playerAccounts = player.getAccounts();
 
-        BalanceResult result = new BalanceResult(playerAccounts.getBalance()-value, playerAccounts.getCreditBalance());
+        BalanceResult result = new BalanceResult(playerAccounts.getBalance() - value, playerAccounts.getCreditBalance());
         TransactionServiceImpl transactionService = new TransactionServiceImpl();
         transactionService.save(new Transaction(id, 1, playerAccounts, result));
 
@@ -73,13 +76,14 @@ public class PlayerServiceImpl implements PlayerService {
 
     /**
      * Добавляет в creditMoney игрока заданное значение
-     * @param id id игрока
+     *
+     * @param id    id игрока
      * @param value сколько вывести
      * @throws TransactionException
      */
     @Override
     public void takeCredit(int id, double value) throws TransactionException {
-        if (value <= 0){
+        if (value <= 0) {
             throw new TransactionException("Вы указали недопустимую сумму!");
         }
 
@@ -97,7 +101,8 @@ public class PlayerServiceImpl implements PlayerService {
 
     /**
      * Добавляет запись в базе данных, регистрирует пустого Player
-     * @param login логин
+     *
+     * @param login    логин
      * @param password пароль
      * @throws LoginException если логин уже существует
      * @see org.example.out.Models.Player
@@ -121,18 +126,17 @@ public class PlayerServiceImpl implements PlayerService {
 
     /**
      * Проверяем есть ли пользователь в базе данных
-     * @param login логин
+     *
+     * @param login    логин
      * @param password пароль
      * @return playerId полученный id
      * @throws NotFindException если пользователь не найден
      */
     @Override
     public int logIn(String login, String password) throws NotFindException {
-        List<Player> playerList = playerDAO.getAll();
-        for (Player player:playerList){
-            if (player.getLogin().equals(login) && player.getPassword().equals(password)){
-                return player.getId();
-            }
+        Player player = playerDAO.findByLogin(login).orElseThrow(() -> new NotFindException("Пользователь не найден!"));
+        if (player.getPassword().equals(password)) {
+            return player.getId();
         }
         throw new NotFindException("Пользователь не найден!");
     }
@@ -140,6 +144,7 @@ public class PlayerServiceImpl implements PlayerService {
 
     /**
      * Получает Accounts указанного игрока по id
+     *
      * @param id - игрок
      * @return BalanceResult
      */

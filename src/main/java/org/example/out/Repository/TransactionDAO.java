@@ -10,7 +10,7 @@ import java.util.*;
 
 public class TransactionDAO implements DAO<Transaction> {
 
-    private static Connection connection;
+    private Connection connection;
 
     @Override
     public Optional<Transaction> get(Integer id) {
@@ -135,7 +135,7 @@ public class TransactionDAO implements DAO<Transaction> {
 
     }
 
-    public static void setConnection(Connection connection) {
-        TransactionDAO.connection = connection;
+    public void setConnection(Connection connection) {
+        this.connection = connection;
     }
 }

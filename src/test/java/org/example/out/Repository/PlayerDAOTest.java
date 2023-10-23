@@ -41,7 +41,7 @@ import java.util.List;
 public class PlayerDAOTest {
 
     private static Connection connection = null;
-    private static PlayerDAO playerDAO;
+    private static PlayerDAO playerDAO = new PlayerDAO();
 
     @Container
     private static PostgreSQLContainer postgres = new PostgreSQLContainer<>(DockerImageName.parse("postgres:latest"))
@@ -66,7 +66,7 @@ public class PlayerDAOTest {
         }
 
 
-        PlayerDAO.setConnection(connection);
+        playerDAO.setConnection(connection);
 
         playerDAO = new PlayerDAO();
 
@@ -96,7 +96,7 @@ public class PlayerDAOTest {
         }
 
 
-        PlayerDAO.setConnection(connection);
+        playerDAO.setConnection(connection);
 
         playerDAO = new PlayerDAO();
     }

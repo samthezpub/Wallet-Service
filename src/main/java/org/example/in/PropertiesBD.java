@@ -5,9 +5,13 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
 
+/**
+ * Класс создан для того чтобы облегчить подключение к бд
+ */
 public class PropertiesBD {
     private static PropertiesBD INSTANCE;
     private Properties properties = new Properties();
+
 
     private PropertiesBD() throws IOException {
             File file = new File("src/main/resources/liquibase.properties");
@@ -16,6 +20,10 @@ public class PropertiesBD {
 
     }
 
+    /**
+     * Singleton Lazy, для того чтобы подключиться, ленивая инициализация
+     * @return PropertiesDB готовый объект
+     */
     public static PropertiesBD getInstance() {
         if (INSTANCE == null) {
             try {
@@ -27,14 +35,27 @@ public class PropertiesBD {
         return INSTANCE;
     }
 
+    /**
+     * Возвращает Login базы данных
+     * @return String
+     */
     public String getLogin(){
         return properties.get("username").toString();
     }
 
+
+    /**
+     * Возвращает Password базы данных
+     * @return String
+     */
     public String getPassword(){
         return properties.get("password").toString();
     }
 
+    /**
+     * Возвращает JDBC путь базы данных
+     * @return String
+     */
     public String getDBPath(){
         return properties.get("url").toString();
     }

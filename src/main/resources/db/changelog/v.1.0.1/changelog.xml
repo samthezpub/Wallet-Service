@@ -1,0 +1,21 @@
+
+<databaseChangeLog
+xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd">
+
+<changeSet id="create-table-player" author="me">
+    <createTable schemaName="entities" tableName="player">
+        <column name="id" type="int" generationType="ALWAYS" autoIncrement="true" incrementBy="1" startWith="1">
+            <constraints nullable="false" primaryKey="true"/>
+        </column>
+        <column name="balance" type="double"/>
+        <column name="credit_balance" type="double"/>
+        <column name="login" type="varchar(64)"/>
+        <column name="password" type="varchar(64)"/>
+
+
+    </createTable>
+</changeSet>
+
+</databaseChangeLog>

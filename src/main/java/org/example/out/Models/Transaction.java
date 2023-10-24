@@ -1,8 +1,6 @@
-package org.example.out.Dispatchers;
+package org.example.out.Models;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.example.out.Enums.TransactionTypeEnum;
 import org.example.out.Utils.BalanceResult;
 
 import java.util.Date;
@@ -13,15 +11,14 @@ public class Transaction {
 
     private Integer id;
     private Integer playerId;
-    private TransactionTypeEnum type;
+    private int typeId;
     private BalanceResult accounts;
     private BalanceResult balanceAfterOperation;
     private Date date;
 
-    public Transaction(Integer playerId, TransactionTypeEnum type, BalanceResult accounts, BalanceResult balanceAfterOperation) {
-        id = nextId++;
+    public Transaction(Integer playerId, int typeId, BalanceResult accounts, BalanceResult balanceAfterOperation) {
         this.playerId = playerId;
-        this.type = type;
+        this.typeId = typeId;
         this.accounts = accounts;
         this.balanceAfterOperation = balanceAfterOperation;
         this.date = new Date();
@@ -29,8 +26,20 @@ public class Transaction {
 
     @Override
     public String toString() {
+        String typeIdString = "";
+        switch (typeId){
+            case 0:
+                typeIdString = "DEPOSIT";
+                break;
+            case 1:
+                typeIdString = "WITHDRAW";
+                break;
+            case 2:
+                typeIdString = "CREDIT";
+                break;
+        }
         return  "\nid= " + id +
-                ", Тип: " + type +
+                ", Тип: " + typeIdString +
                 ",\n Баланс перед операцией: " + accounts.getBalance() +
                 ", Кредит перед операцией: " + accounts.getCreditBalance() +
                 ",\n Баланс после операции: " + balanceAfterOperation.getBalance() +
@@ -46,7 +55,7 @@ public class Transaction {
         Transaction that = (Transaction) o;
 
         if (id != that.id) return false;
-        if (type != that.type) return false;
+        if (typeId != that.typeId) return false;
         if (!accounts.equals(that.accounts)) return false;
         if (!balanceAfterOperation.equals(that.balanceAfterOperation)) return false;
         return date.equals(that.date);
@@ -54,8 +63,7 @@ public class Transaction {
 
     @Override
     public int hashCode() {
-        int result = id;
-        result = 31 * result + type.hashCode();
+        int result = 1;
         result = 31 * result + accounts.hashCode();
         result = 31 * result + balanceAfterOperation.hashCode();
         result = 31 * result + date.hashCode();

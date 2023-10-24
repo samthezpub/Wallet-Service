@@ -1,0 +1,34 @@
+version: "3.9"
+services:
+  app:
+      build:
+          context: .
+          dockerfile: Dockerfile
+      ports:
+        - "5433:5432"
+      volumes:
+        - ./your-app:/app
+      depends_on:
+        - db
+
+  db:
+    image: postgres:latest
+    container_name: postgres-container
+    environment:
+      POSTGRES_DB: "wallet"
+      POSTGRES_USER: "vova"
+      POSTGRES_PASSWORD: "123123"
+    ports:
+      - "5432:5432"
+
+  liquibase:
+    image: liquibase/liquibase:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: liquibase-container
+    volumes:
+      - ./liquibase:/liquibase
+    command: [ "mvn", "liquibase:update" ]
+    depends_on:
+      - db

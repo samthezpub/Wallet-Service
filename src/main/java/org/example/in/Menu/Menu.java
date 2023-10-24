@@ -1,19 +1,23 @@
 package org.example.in.Menu;
 
 import org.example.in.Exceptions.InputException;
-import org.example.out.Dispatchers.Dispatch;
-import org.example.out.Dispatchers.Player;
-import org.example.out.Dispatchers.Transaction;
+import org.example.out.Models.Transaction;
 import org.example.out.Exceptions.LoginException;
 import org.example.out.Exceptions.NotFindException;
 import org.example.out.Exceptions.TransactionException;
+import org.example.out.Service.Impl.PlayerServiceImpl;
+import org.example.out.Service.Impl.TransactionServiceImpl;
+import org.example.out.Utils.BalanceResult;
 
 import java.util.Scanner;
 import java.util.Set;
 
 public class Menu {
-    private static Player player = new Player();
+    private static PlayerServiceImpl playerService = new PlayerServiceImpl();
+    private static TransactionServiceImpl transactionService = new TransactionServiceImpl();
     private static Scanner scanner = new Scanner(System.in);
+
+    private static int currentUserId;
 
 
     public static void register() {
@@ -53,7 +57,7 @@ public class Menu {
 
 
         try {
-            player.register(login, password);
+            playerService.register(login, password);
         } catch (LoginException e) {
             System.err.println(e.getMessage());
             menuNotLoggined();
@@ -91,14 +95,14 @@ public class Menu {
         }
 
         try {
-            player.logIn(login, password);
+            currentUserId= playerService.logIn(login, password);
 
             menuLoggined();
         } catch (NotFindException e) {
             System.err.println(e.getMessage());
             menuNotLoggined();
         }
-        System.out.println("Вы успешно авторизированы, можете выполнять операции");
+        System.out.println("Вы успешно авторизованы, можете выполнять операции");
 
 
     }
@@ -111,7 +115,7 @@ public class Menu {
         try {
             value = Double.parseDouble(scanner.next());
             try {
-                player.deposit(value);
+                playerService.deposit(currentUserId,value);
                 getBalance();
                 return;
             } catch (TransactionException e) {
@@ -132,11 +136,11 @@ public class Menu {
 
         try {
             value = Double.parseDouble(scanner.next());
-            player.withdraw(value);
+            playerService.withdraw(currentUserId, value);
 
             getBalance();
-        } catch (NumberFormatException e) {
-            System.err.println("Вы ввели недопустимое значение!");
+        } catch (TransactionException e) {
+            System.err.println(e.getMessage());
         } finally {
             menuLoggined();
         }
@@ -151,24 +155,23 @@ public class Menu {
 
         try {
             value = Double.parseDouble(scanner.next());
-            player.takeCredit(value);
+            playerService.takeCredit(currentUserId, value);
             getBalance();
             menuLoggined();
-        } catch (NumberFormatException e) {
+        } catch (TransactionException e) {
             System.err.println("Вы ввели недопустимое значение!");
             menuLoggined();
         }
     }
 
     private static void logout() {
-        player.logOut(player);
         System.out.println("Вы вышли из аккаунта!");
         System.out.println("Всего хорошего!");
         menuNotLoggined();
     }
 
     public static void getTransactions() {
-        Set<Transaction> transtactionsSet = player.getTransactions();
+        Set<Transaction> transtactionsSet = transactionService.findTransactionsByPlayerId(currentUserId);
 
         if (transtactionsSet.size() == 0) {
             System.out.println("Тут пока нет транзакций!");
@@ -182,10 +185,12 @@ public class Menu {
     }
 
     public static void getBalance() {
+        BalanceResult balanceResult = playerService.getBalance(currentUserId);
+
         System.out.println("Ваш баланс");
-        System.out.println("Общий: " + player.getAccounts().getBalance());
-        System.out.println("Кредитный: " + player.getAccounts().getCreditBalance());
-        System.out.println("Ваши деньги: " + (player.getAccounts().getBalance() - player.getAccounts().getCreditBalance()));
+        System.out.println("Общий: " + balanceResult.getBalance());
+        System.out.println("Кредитный: " + balanceResult.getCreditBalance());
+        System.out.println("Ваши деньги: " + (balanceResult.getBalance() - balanceResult.getCreditBalance()));
 
         menuLoggined();
     }
